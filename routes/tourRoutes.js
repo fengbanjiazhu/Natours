@@ -5,11 +5,23 @@ const {
   getTour,
   updateTour,
   deleteTour,
+  checkID,
+  checkBody,
 } = require('../controllers/tourController');
 
 const router = express.Router();
 
-router.route('/').get(getAllTour).post(createTour);
+// data flow will go through middle wares
+// and arrive here (tour routes)
+// and if there is a /id/ value
+// will go trough ↓ again
+router.param('id', checkID);
+
+// the data will go through checkID first,
+// then deal with the controller
+
+// chain a middle ware before response
+router.route('/').get(getAllTour).post(checkBody, createTour);
 // /api/v1/tours/:id/:x? -- ? will make x optional
 router.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
 
