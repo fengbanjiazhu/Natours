@@ -5,7 +5,6 @@ const {
   getTour,
   updateTour,
   deleteTour,
-  checkID,
   checkBody,
 } = require('../controllers/tourController');
 
@@ -15,8 +14,8 @@ const router = express.Router();
 // and arrive here (tour routes)
 // and if there is a /id/ value
 // will go trough ↓ again
-router.param('id', checkID);
 
+// router.param('id', checkID);
 // the data will go through checkID first,
 // then deal with the controller
 
