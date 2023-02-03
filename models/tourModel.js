@@ -63,6 +63,10 @@ const tourSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   {
@@ -81,6 +85,7 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
+// --------------------------------------------------------
 // Document Middleware : runs before .save() and .create()
 tourSchema.pre('save', function (next) {
   // this -- is current processing document
@@ -89,16 +94,48 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
-// multi pre middleware could exist
-tourSchema.pre('save', function (next) {
-  console.log('will save document ...');
+// multi pre-middleware could exist
+// tourSchema.pre('save', function (next) {
+//   console.log('will save document ...');
+//   next();
+// });
+
+// Post middleware : runs after all pre middleware finished
+// tourSchema.post('save', function (doc, next) {
+//   // doc:  processed document
+//   // console.log(doc) -- {name : ...  slug:test-tour...}
+//   next();
+// });
+
+// --------------------------------------------------------------
+// QUERY middleware
+// this -- query obj --not data
+// tourSchema.pre('find', function (next) {}
+
+// but if we have the ID search for secret tour, it still will show
+// because findById => findOne, find => find
+// so we use a regular expression
+// to remove secret from all query start by find (findOne, findAll...)
+tourSchema.pre(/^find/, function (next) {
+  //$ne: not equal to
+  //here means : query.find( secretTour : not true)
+  //not showing the true secret tours
+  this.find({ secretTour: { $ne: true } });
+  // this.start = Date.now();
   next();
 });
 
-// Post middleware : runs after all pre middleware finished
-tourSchema.post('save', function (doc, next) {
-  // doc:  processed document
-  // console.log(doc) -- {name : ...  slug:test-tour...}
+// docs => all datas found by query
+// tourSchema.post(/^find/, function (docs, next) {
+//   // console.log(`Query took: ${Date.now() - this.start} milliseconds`);
+//   next();
+// });
+
+// --------------------------------------------------------------
+// Aggregation Middleware
+tourSchema.pre('aggregate', function (next) {
+  // remove secret tour in aggregate pipeline result
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   next();
 });
 
