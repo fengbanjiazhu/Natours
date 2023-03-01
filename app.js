@@ -35,5 +35,6 @@ app.all('*', (req, res, next) => {
     message: `Can't find ${req.originalUrl} on this server!`,
   });
 });
+// has to in the end of routes
 
 module.exports = app;
