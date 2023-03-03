@@ -39,11 +39,8 @@ app.all('*', (req, res, next) => {
   // err.statusCode = '404';
 
   next(new appErr(`Can't find ${req.originalUrl} on this server!`));
-
-  next(err);
   // will skip all other middle ware and goes into error handler
 });
 
 app.use(globalErrHandler);
-
 module.exports = app;
