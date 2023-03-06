@@ -20,12 +20,23 @@ mongoose
     useFindAndModify: false,
     useUnifiedTopology: true,
   })
-  .then(() => console.log('DB connection successful'));
+  .then(() => console.log('DB connection successful'))
+  .catch((err) => console.log('ERROR'));
 
 // Server
 const port = 3000 || process.env.PORT;
-app.listen(port, () => {
+
+const server = app.listen(port, () => {
   console.log(`app running on ${port}...`);
 });
 
-// test  debugger
+// listen all other un handled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
+
+  // if we really have some problems, shut down the app
+  server.close(() => {
+    process.exit(1);
+    // 0 => success, 1 => un-captured problem
+  });
+});
