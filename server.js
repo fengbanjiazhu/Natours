@@ -49,14 +49,3 @@ process.on('unhandledRejection', (err) => {
     // 0 => success, 1 => un-captured problem
   });
 });
-
-// listen all other unhandled Exception (sync code errors)
-process.on('uncaughtException', (err) => {
-  console.log(err.name, err.message);
-
-  // if we really have some problems, shut down the app
-  server.close(() => {
-    process.exit(1);
-    // 0 => success, 1 => un-captured problem
-  });
-});
