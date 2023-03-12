@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 process.on('uncaughtException', (err) => {
   console.log(err.name, err.message);
 
-  // if we really have some problems, shut down the app
+  // shut down the app if there are issues
   process.exit(1);
   // 0 => success, 1 => un-captured problem
 });
@@ -43,20 +43,8 @@ const server = app.listen(port, () => {
 process.on('unhandledRejection', (err) => {
   console.log(err.name, err.message);
 
-  // if we really have some problems, shut down the app
+  // close the server, then shut down the app
   server.close(() => {
     process.exit(1);
-    // 0 => success, 1 => un-captured problem
-  });
-});
-
-// listen all other unhandled Exception (sync code errors)
-process.on('uncaughtException', (err) => {
-  console.log(err.name, err.message);
-
-  // if we really have some problems, shut down the app
-  server.close(() => {
-    process.exit(1);
-    // 0 => success, 1 => un-captured problem
   });
 });
