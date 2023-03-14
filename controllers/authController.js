@@ -51,3 +51,27 @@ exports.login = catchAsync(async (req, res, next) => {
     token,
   });
 });
+
+exports.protect = catchAsync(async (req, res, next) => {
+  let token;
+  // 1 get token, check status
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token) {
+    return next(new AppError('Please log in first', 401));
+  }
+  // 2 validate token
+
+  // 3 check if user still exists
+
+  // 4 if user changed password after token issued
+
+  //
+
+  next();
+});
