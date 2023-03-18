@@ -62,12 +62,10 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-
   if (!token) {
     return next(new AppError('Please log in first', 401));
   }
-  // 2 validate token
-  // jwt.verify(token, secret)
+  // 2 validate token   jwt.verify(token, secret)
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // 3 check if user still exists
@@ -81,7 +79,6 @@ exports.protect = catchAsync(async (req, res, next) => {
       new AppError('The password has been changed, please login again', 401)
     );
   }
-
   // Grand Access to Protected Route
   req.user = currentUser;
   next();
