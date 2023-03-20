@@ -1,14 +1,6 @@
 const express = require('express');
-const {
-  getAllTour,
-  createTour,
-  getTour,
-  updateTour,
-  deleteTour,
-  aliasTopTours,
-  getTourStats,
-  getMonthlyPlan,
-} = require('../controllers/tourController');
+const tourController = require('../controllers/tourController');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -17,13 +9,26 @@ const router = express.Router();
 // pre-set some query options in
 // help us with find top rating and sort by price
 // then uses getAllTour() with the query to get result
-router.route('/top-5-cheap').get(aliasTopTours, getAllTour);
+router
+  .route('/top-5-cheap')
+  .get(tourController.aliasTopTours, tourController.getAllTour);
 
-router.route('/tour-stats').get(getTourStats);
-router.route('/monthly-plan/:year').get(getMonthlyPlan);
+router.route('/tour-stats').get(tourController.getTourStats);
+router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
 
-router.route('/').get(getAllTour).post(createTour);
+router
+  .route('/')
+  .get(authController.protect, tourController.getAllTour)
+  .post(tourController.createTour);
 
-router.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
+router
+  .route('/:id')
+  .get(tourController.getTour)
+  .patch(tourController.updateTour)
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.deleteTour
+  );
 
 module.exports = router;

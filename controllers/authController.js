@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/userModel');
@@ -51,3 +52,49 @@ exports.login = catchAsync(async (req, res, next) => {
     token,
   });
 });
+
+exports.protect = catchAsync(async (req, res, next) => {
+  let token;
+  // 1 get token, check status
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+  if (!token) {
+    return next(new AppError('Please log in first', 401));
+  }
+  // 2 validate token   jwt.verify(token, secret)
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  // 3 check if user still exists
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(new AppError('The user no longer exist', 401));
+  }
+  // 4 if user changed password after token issued
+  if (currentUser.changesPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError('The password has been changed, please login again', 401)
+    );
+  }
+  // Grand Access to Protected Route
+  req.user = currentUser;
+  next();
+});
+
+// restrictTo() runs after protect() ⬆️
+// so we could use req.user to get user info
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // roles is an array, ['admin', 'lead-guide']
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission to perform this action', 403)
+      );
+    }
+
+    next();
+  };
+};
