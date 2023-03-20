@@ -46,9 +46,6 @@ process.on('unhandledRejection', (err) => {
   // close the server, then shut down the app
   server.close(() => {
     process.exit(1);
-<<<<<<< HEAD
-=======
     // 0 => success, 1 => un-captured problem
->>>>>>> c2851f8bf13fa2e939482801afb298114a6a7085
   });
 });
