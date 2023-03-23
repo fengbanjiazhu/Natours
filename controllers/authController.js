@@ -170,6 +170,13 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 3 update changed password property for user
+  // completed in modal middle ware
 
   // 4 log the user in, send JWT
+  token = signToken(user._id);
+
+  res.status(200).json({
+    status: 'success',
+    token,
+  });
 });
