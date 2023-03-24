@@ -5,7 +5,6 @@ const catchAsync = require('../utils/catchAsync');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
-const { appendFile } = require('fs');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -173,6 +172,30 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // completed in modal middle ware
 
   // 4 log the user in, send JWT
+  token = signToken(user._id);
+
+  res.status(200).json({
+    status: 'success',
+    token,
+  });
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1 get user from collection
+  const user = await User.findById(req.user.id).select('+password');
+
+  // 2 check input password is correct
+  const currentPassword = req.body.passwordCurrent;
+  if (!(await user.correctPassword(currentPassword, user.password))) {
+    return next(new AppError('your current password is wrong', 401));
+  }
+
+  // 3 if its correct, update password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+
+  // 4 log user in, send JWT
   token = signToken(user._id);
 
   res.status(200).json({
