@@ -58,6 +58,13 @@ userSchema.pre('save', async function (next) {
   // delete password confirm field
   this.passwordConfirm = undefined;
   next();
+  M;
+});
+
+userSchema.pre(/^find/, function (next) {
+  // this -> point to current query
+  this.find({ active: { $ne: 'false' } });
+  next();
 });
 
 userSchema.pre('save', function (next) {
