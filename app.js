@@ -1,6 +1,7 @@
 const morgan = require('morgan');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
 const appErr = require('./utils/appError');
 const globalErrHandler = require('./controllers/errorController');
@@ -10,12 +11,17 @@ const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
-// middleware - a process that request go through every time
 // 1 GLOBAL Middleware
+
+// Set security HTTP headers
+app.use(helmet());
+
+// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
+// Limit request from same API
 const limiter = rateLimit({
   max: 100,
   windowMs: 60 * 60 * 1000,
@@ -23,14 +29,14 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-app.use(express.json());
+// Body parser, reading data from the body into req.body
+// and limit the data in 10kb
+app.use(express.json({ limit: '10kb' }));
+
+// Serving static files
 app.use(express.static(`${__dirname}/public`));
 
-// app.use((req, res, next) => {
-//   console.log('hello from the middleware');
-//   next();
-// });
-
+// Test middle ware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   next();
@@ -43,10 +49,6 @@ app.use('/api/v1/users', userRouter);
 
 // has to in the end of routes
 app.all('*', (req, res, next) => {
-  // const err = new Error(`Can't find ${req.originalUrl} on this server!`);
-  // err.status = 'fail';
-  // err.statusCode = '404';
-
   next(new appErr(`Can't find ${req.originalUrl} on this server!`));
   // will skip all other middle ware and goes into error handler
 });
