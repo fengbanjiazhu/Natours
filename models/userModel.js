@@ -58,7 +58,6 @@ userSchema.pre('save', async function (next) {
   // delete password confirm field
   this.passwordConfirm = undefined;
   next();
-  M;
 });
 
 userSchema.pre(/^find/, function (next) {
