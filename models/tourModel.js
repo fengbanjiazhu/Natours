@@ -121,13 +121,19 @@ const tourSchema = new mongoose.Schema(
 );
 
 // virtual property
-// will create a virtual property each time we use a get()
+// will create a fake property each time we use a get()
 // can work with a callback func to deal with some data
 // instead of setting many different datas
 // exp: inch to meter
 tourSchema.virtual('durationWeeks').get(function () {
-  // can not use =>{}, we need this. keyword
   return this.duration / 7;
+});
+
+// virtual populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
 });
 
 // --------------------------------------------------------
