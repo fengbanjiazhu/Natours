@@ -2,7 +2,11 @@ const express = require('express');
 const reviewController = require('../controllers/reviewController');
 const authController = require('../controllers/authController');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
+
+// POST /reviews
+// POST /tour/1234sff/reviews
+// both go through ('/')
 
 router
   .route('/')
