@@ -37,10 +37,10 @@ router
 // GET /tour/234fad4/reviews/94887fda
 
 router
-  .route('/:id/reviews')
+  .route('/:tourId/reviews')
   .post(
     authController.protect,
-    authController.restrictTo('users'),
+    authController.restrictTo('user'),
     reviewController.createReview
   );
 
