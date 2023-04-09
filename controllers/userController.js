@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
@@ -12,18 +12,14 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
-exports.getAllUsers = catchAsync(async (req, res) => {
-  let users = await User.find();
+exports.getAllUsers = factory.getAll(User);
 
-  // send response
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
+exports.getUser = factory.getOne(User);
+
+// do not update password with this
+exports.updateUser = factory.updateOne(User);
+
+exports.deleteUser = factory.deleteOne(User);
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1 create error if user send password through
@@ -60,10 +56,3 @@ exports.createUser = (req, res) => {
     message: 'this route is not defined! Please use /signup instead.',
   });
 };
-
-exports.getUser = factory.getOne(User);
-
-// do not update password with this
-exports.updateUser = factory.updateOne(User);
-
-exports.deleteUser = factory.deleteOne(User);
