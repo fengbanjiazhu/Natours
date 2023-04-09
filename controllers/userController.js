@@ -21,6 +21,11 @@ exports.updateUser = factory.updateOne(User);
 
 exports.deleteUser = factory.deleteOne(User);
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1 create error if user send password through
   if (req.body.password || req.body.passwordConfirm) {
