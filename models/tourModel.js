@@ -203,11 +203,11 @@ tourSchema.post(/^find/, function (docs, next) {
 
 // --------------------------------------------------------------
 // Aggregation Middleware
-tourSchema.pre('aggregate', function (next) {
-  // remove secret tour in aggregate pipeline result
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  next();
-});
+
+// tourSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//   next();
+// });
 
 // create something like an "ES6 class"
 const Tour = mongoose.model('Tour', tourSchema);
