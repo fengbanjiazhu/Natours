@@ -153,10 +153,17 @@ exports.getDistances = catchAsync(async (req, res, next) => {
       $geoNear: {
         near: {
           type: 'Point',
-          coordinates: [lng, lat],
+          coordinates: [lng * 1, lat * 1],
         },
-        distanceField: 'distance',
+        distanceField: 'dist.calculated',
         spherical: true,
+        distanceMultiplier: 0.001,
+      },
+    },
+    {
+      $project: {
+        distance: 1,
+        name: 1,
       },
     },
   ]);
