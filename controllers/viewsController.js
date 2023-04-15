@@ -14,8 +14,15 @@ exports.getOverview = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllTour = (req, res) => {
+exports.getTour = catchAsync(async (req, res) => {
+  const slug = req.params.slug;
+  const tour = await Tour.findOne({ slug }).populate({
+    path: 'reviews',
+    fields: 'review rating user',
+  });
+
   res.status(200).render('tour', {
     title: 'The Forest Hiker Tour',
+    tour,
   });
-};
+});
