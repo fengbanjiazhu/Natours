@@ -2,7 +2,9 @@ extends base
 include _reviewCard
 
 block append head
-  script(defer src='/js/mapbox.js')
+  //- link(rel="stylesheet" href="/css/leaflet.css")
+  //- script(defer type="module" src='/js/leaflet.js')
+  script(defer  type="module" src='/js/mapbox.js')
 
 mixin overviewBox(label,text,icon)
   .overview-box__detail
@@ -15,7 +17,7 @@ block content
   section.section-header
     .header__hero
       .header__hero-overlay &nbsp;
-      img.header__hero-img(src='/img/tour-5-cover.jpg', alt='Tour 5')
+      img.header__hero-img(src=`/img/tours/${tour.imageCover}`, alt='Tour 5')
 
     .heading-box
       h1.heading-primary
@@ -60,6 +62,7 @@ block content
       each p in tourDescription
         p.description__text= p
 
+  section.section-pictures
     each img,i in tour.images
       .picture-box
         img.picture-box__img(src=`/img/tours/${img}`, alt=`${tour.name} ${i+1}` class=`.picture-box__img--${i+1}`)
