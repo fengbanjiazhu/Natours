@@ -32,3 +32,9 @@ exports.loginView = catchAsync(async (req, res) => {
     title: `Login to your account`,
   });
 });
+
+exports.signupView = catchAsync(async (req, res) => {
+  res.status(200).render('signup', {
+    title: `Sign up`,
+  });
+});
