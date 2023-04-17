@@ -6,6 +6,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const path = require('path');
+const cors = require('cors');
 
 const appErr = require('./utils/appError');
 const globalErrHandler = require('./controllers/errorController');
@@ -26,11 +27,19 @@ app.set('views', path.join(__dirname, 'views'));
 // app.use(express.static(`${__dirname}/public`));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(
+  cors({
+    origin: '*',
+  })
+);
+
 // Set security HTTP headers
 app.use(
   helmet.contentSecurityPolicy({
     useDefaults: true,
     directives: {
+      'default-src': ["'self'"],
+      'connect-src': ["'self'", '*'],
       'img-src': ["'self'", 'https: data:'],
       'script-src': ["'self'", 'https: data:'],
     },
