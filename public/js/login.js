@@ -6,7 +6,7 @@ const login = async (email, password) => {
     //   url: 'http://127.0.0.1:3000/api/v1/users/login',
     //   data: { email, password },
     // });
-    const res = await fetch('http://127.0.0.1:3000/api/v1/users/login', {
+    const res = await fetch('http://localhost:3000/api/v1/users/login', {
       credentials: 'include',
       method: 'POST',
       headers: {
