@@ -105,6 +105,30 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+// only for render pages, no errors
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  const token = req.cookies.jwt;
+  // 1 get token from cookies only
+  if (!token) return next();
+
+  // 2 verify token   jwt.verify(token, secret)
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  // 3 check if user still exists
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next();
+  }
+  // 4 if user changed password after token issued
+  if (currentUser.changesPasswordAfter(decoded.iat)) {
+    return next();
+  }
+  // There is a logged in user
+  // all pug templates will have access to 'res.locals'
+  res.locals.user = currentUser;
+  next();
+});
+
 // restrictTo() runs after protect() ⬆️
 // so we could use req.user to get user info
 exports.restrictTo = (...roles) => {

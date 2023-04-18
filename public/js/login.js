@@ -14,9 +14,15 @@ const login = async (email, password) => {
       },
       body: JSON.stringify({ email, password }),
     });
-    console.log(res);
+
+    if (res.formData.status === 'success') {
+      alert('Logged in successfully!');
+      window.setTimeout(() => {
+        location.assign('/');
+      }, 1500);
+    }
   } catch (error) {
-    console.log(error);
+    alert(error.response.data.message);
   }
 };
 
