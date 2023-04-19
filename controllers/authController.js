@@ -71,6 +71,18 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+exports.logout = catchAsync(async (req, res, next) => {
+  const cookieOptions = {
+    expires: new Date(Date.now() + 5 * 1000),
+  };
+
+  res.cookie('jwt', 'loggedOut', cookieOptions);
+
+  res.status(200).json({
+    status: 'success',
+  });
+});
+
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   // 1 get token, check status
@@ -107,26 +119,30 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 // only for render pages, no errors
 exports.isLoggedIn = catchAsync(async (req, res, next) => {
-  const token = req.cookies.jwt;
-  // 1 get token from cookies only
-  if (!token) return next();
+  try {
+    const token = req.cookies.jwt;
+    // 1 get token from cookies only
+    if (!token) return next();
 
-  // 2 verify token   jwt.verify(token, secret)
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    // 2 verify token   jwt.verify(token, secret)
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  // 3 check if user still exists
-  const currentUser = await User.findById(decoded.id);
-  if (!currentUser) {
+    // 3 check if user still exists
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
+      return next();
+    }
+    // 4 if user changed password after token issued
+    if (currentUser.changesPasswordAfter(decoded.iat)) {
+      return next();
+    }
+    // There is a logged in user
+    // all pug templates will have access to 'res.locals'
+    res.locals.user = currentUser;
+    next();
+  } catch (error) {
     return next();
   }
-  // 4 if user changed password after token issued
-  if (currentUser.changesPasswordAfter(decoded.iat)) {
-    return next();
-  }
-  // There is a logged in user
-  // all pug templates will have access to 'res.locals'
-  res.locals.user = currentUser;
-  next();
 });
 
 // restrictTo() runs after protect() ⬆️
