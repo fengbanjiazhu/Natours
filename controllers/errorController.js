@@ -1,30 +1,55 @@
 const AppError = require('../utils/appError');
 
-const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack,
+const sendErrorDev = (err, req, res) => {
+  // API
+  if (req.originalUrl.startsWith('/api')) {
+    res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack,
+    });
+  }
+
+  // render website
+  console.error('ERROR!', err);
+  res.status(err.statusCode).render('error', {
+    title: 'Something went wrong',
+    msg: err.message,
   });
 };
 
-const senErrorProd = (err, res) => {
-  // Operational, trusted error: send a message to client
-  if (err.isOperational) {
-    res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message,
-    });
-    // Programming or other unknown error: don't show error details
-  } else {
-    console.error('ERROR 💥', err);
+const senErrorProd = (err, req, res) => {
+  // API
+  if (req.originalUrl.startsWith('/api')) {
+    // Operational, trusted error: send a message to client
+    if (err.isOperational) {
+      res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message,
+      });
+    }
 
+    // Programming or other unknown error: don't show error details
+    console.error('ERROR!', err);
     res.status(500).json({
       status: 'error',
-      message: 'something goes wrong',
+      msg: 'something went very wrong!',
     });
   }
+
+  // render website
+  if (err.isOperational) {
+    res.status(err.statusCode).render('error', {
+      title: 'Something went wrong',
+      msg: err.message,
+    });
+  }
+
+  res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: 'Please try again later.',
+  });
 };
 
 handleCastErrorDB = (err) => {
@@ -39,7 +64,6 @@ const handleDuplicateFieldDB = (err) => {
 };
 
 const handleValidationErrorDB = (err) => {
-  console.log(err);
   const errors = Object.values(err.errors).map((el) => el.message);
 
   const message = `Invalid input data: ${errors.join('. ')}`;
@@ -55,9 +79,9 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(err, res);
+    sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
-    let error = { ...err };
+    let error = { ...err, message: err.message };
 
     if (error.name === 'CastError') error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldDB(error);
@@ -65,6 +89,6 @@ module.exports = (err, req, res, next) => {
       error = handleValidationErrorDB(error);
     if (error.name === 'TokenExpiredError') error = handleJWTExpireError(error);
 
-    senErrorProd(error, res);
+    senErrorProd(error, req, res);
   }
 };
