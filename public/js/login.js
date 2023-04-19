@@ -1,11 +1,5 @@
-const login = async (email, password) => {
+export const login = async (email, password) => {
   try {
-    // const res = await axios({
-    //   withCredentials: true,
-    //   method: 'POST',
-    //   url: 'http://127.0.0.1:3000/api/v1/users/login',
-    //   data: { email, password },
-    // });
     const res = await fetch('http://localhost:3000/api/v1/users/login', {
       credentials: 'include',
       method: 'POST',
@@ -15,7 +9,9 @@ const login = async (email, password) => {
       body: JSON.stringify({ email, password }),
     });
 
-    if (res.formData.status === 'success') {
+    const data = await res.json();
+
+    if (data.status === 'success') {
       alert('Logged in successfully!');
       window.setTimeout(() => {
         location.assign('/');
@@ -25,10 +21,3 @@ const login = async (email, password) => {
     alert(error.response.data.message);
   }
 };
-
-document.querySelector('.form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  login(email, password);
-});
