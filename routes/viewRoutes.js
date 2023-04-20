@@ -10,5 +10,10 @@ router.get('/login', authController.isLoggedIn, viewsController.loginView);
 router.get('/me', authController.protect, viewsController.getAccount);
 
 // router.get('/signup', viewsController.signupView);
+router.post(
+  '/submit-user-data',
+  authController.protect,
+  viewsController.updateUserData
+);
 
 module.exports = router;
