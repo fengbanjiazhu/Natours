@@ -1,5 +1,6 @@
 /config.env
 .cache
+.parcelrc
 node_modules
 .DS_store
 dev-data
