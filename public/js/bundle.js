@@ -6804,53 +6804,69 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 // type: password or data
 var updateData = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(data, type) {
-    var dataJSON, url, res, resData;
+    var res, url, dataJSON, resData;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) switch (_context.prev = _context.next) {
         case 0:
+          _context.prev = 0;
+          if (!(type === 'password')) {
+            _context.next = 9;
+            break;
+          }
+          url = 'http://localhost:3000/api/v1/users/updateMyPassword';
           dataJSON = JSON.stringify(data);
-          url = type === 'password' ? 'http://localhost:3000/api/v1/users/updateMyPassword' : 'http://localhost:3000/api/v1/users/updateMe';
-          console.log(url);
-          _context.prev = 3;
           _context.next = 6;
           return fetch(url, {
             credentials: 'include',
-            method: 'PATCH',
             headers: {
               'Content-Type': 'application/json'
             },
+            method: 'PATCH',
             body: dataJSON
           });
         case 6:
           res = _context.sent;
-          _context.next = 9;
-          return res.json();
+          _context.next = 13;
+          break;
         case 9:
+          url = 'http://localhost:3000/api/v1/users/updateMe';
+          _context.next = 12;
+          return fetch(url, {
+            credentials: 'include',
+            method: 'PATCH',
+            body: data
+          });
+        case 12:
+          res = _context.sent;
+        case 13:
+          _context.next = 15;
+          return res.json();
+        case 15:
           resData = _context.sent;
           if (!(resData.status === 'success')) {
-            _context.next = 15;
+            _context.next = 21;
             break;
           }
           (0, _alerts.showAlert)('success', "".concat(type.toUpperCase(), " Updated successfully!"));
           window.setTimeout(function () {
             location.reload();
           }, 1500);
-          _context.next = 16;
+          _context.next = 22;
           break;
-        case 15:
-          throw new Error(resData.message);
-        case 16:
-          _context.next = 21;
-          break;
-        case 18:
-          _context.prev = 18;
-          _context.t0 = _context["catch"](3);
-          (0, _alerts.showAlert)('error', _context.t0);
         case 21:
+          throw new Error(resData.message);
+        case 22:
+          _context.next = 27;
+          break;
+        case 24:
+          _context.prev = 24;
+          _context.t0 = _context["catch"](0);
+          (0, _alerts.showAlert)('error', _context.t0);
+        case 27:
         case "end":
           return _context.stop();
       }
-    }, _callee, null, [[3, 18]]);
+    }, _callee, null, [[0, 24]]);
   }));
   return function updateData(_x, _x2) {
     return _ref.apply(this, arguments);
@@ -7017,13 +7033,11 @@ if (logoutBtn) {
 if (userDataForm) {
   userDataForm.addEventListener('submit', function (e) {
     e.preventDefault();
-    var name = document.getElementById('name').value;
-    var email = document.getElementById('email').value;
-    console.log(name, email);
-    (0, _updateSettings.updateData)({
-      name: name,
-      email: email
-    }, 'data');
+    var form = new FormData();
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('photo', document.getElementById('photo').files[0]);
+    (0, _updateSettings.updateData)(form, 'data');
   });
 }
 if (userPasswordForm) {
