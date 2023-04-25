@@ -6,8 +6,8 @@
   "scripts": {
     "start": "nodemon server.js",
     "prod": "cross-env NODE_ENV=production nodemon server.js",
-    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
-    "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
+    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url .",
+    "build:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js --public-url .",
     "debug": "ndb server.js"
   },
   "author": "Jeff",
@@ -47,5 +47,8 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-react": "^7.32.2",
     "prettier": "^2.8.3"
+  },
+  "parcelOptions": {
+    "sourceMaps": true
   }
 }

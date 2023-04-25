@@ -30,7 +30,7 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => console.log('DB connection successful'))
-  .catch((err) => console.log('ERROR'));
+  .catch((err) => console.log('Connection ERROR💥:', err));
 
 // Server
 const port = 3000 || process.env.PORT;
