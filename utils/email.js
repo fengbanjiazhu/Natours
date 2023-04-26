@@ -13,13 +13,20 @@ module.exports = class Email {
     this.from = `Jeff R <${process.env.EMAIL_FROM}>`;
   }
 
+  //1  create a transporter
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
       // Sendgrid
-      return 1;
+      return nodemailer.createTransport({
+        host: 'smtp.sendgrid.net',
+        port: 587,
+        auth: {
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_PASSWORD,
+        },
+      });
     }
 
-    //1  create a transporter
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
