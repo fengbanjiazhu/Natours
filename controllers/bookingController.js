@@ -1,8 +1,6 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
-const factory = require('./handlerFactory');
-const AppError = require('../utils/appError');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   // get current booked tour
@@ -33,6 +31,8 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
     mode: 'payment',
     success_url: `${req.protocol}://${req.get('host')}/`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
+    client_reference_id: req.params.tourId,
+    customer_email: req.user.email,
   });
 
   // send to client

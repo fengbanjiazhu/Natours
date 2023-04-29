@@ -46,6 +46,7 @@ app.use(
       'connect-src': ["'self'", '*'],
       'img-src': ["'self'", 'https: data:'],
       'script-src': ["'self'", 'https: data:'],
+      'frame-src': ['*'],
     },
   })
 );
