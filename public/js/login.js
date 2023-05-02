@@ -44,3 +44,31 @@ export const logout = async () => {
     showAlert('error', 'Something went wrong, please try again');
   }
 };
+
+export const signUp = async (name, email, password, passwordConfirm) => {
+  try {
+    const res = await fetch('http://localhost:3000/api/v1/users/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, email, password, passwordConfirm }),
+    });
+
+    const data = await res.json();
+
+    if (data.status === 'success') {
+      showAlert(
+        'success',
+        'Welcome to Natours! You will be transfer to login page shortly'
+      );
+      window.setTimeout(() => {
+        location.assign('/login');
+      }, 1500);
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    showAlert('error', error);
+  }
+};
