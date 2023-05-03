@@ -8,7 +8,7 @@ export const updateData = async (data, type) => {
 
   try {
     if (type === 'password') {
-      url = 'http://localhost:3000/api/v1/users/updateMyPassword';
+      url = '/api/v1/users/updateMyPassword';
       const dataJSON = JSON.stringify(data);
       res = await fetch(url, {
         credentials: 'include',
@@ -19,7 +19,7 @@ export const updateData = async (data, type) => {
         body: dataJSON,
       });
     } else {
-      url = 'http://localhost:3000/api/v1/users/updateMe';
+      url = '/api/v1/users/updateMe';
       res = await fetch(url, {
         credentials: 'include',
         method: 'PATCH',

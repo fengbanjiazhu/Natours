@@ -2,7 +2,7 @@ import { showAlert } from './alerts';
 
 export const login = async (email, password) => {
   try {
-    const res = await fetch('http://localhost:3000/api/v1/users/login', {
+    const res = await fetch('/api/v1/users/login', {
       credentials: 'include',
       method: 'POST',
       headers: {
@@ -28,7 +28,7 @@ export const login = async (email, password) => {
 
 export const logout = async () => {
   try {
-    const res = await fetch('http://localhost:3000/api/v1/users/logout', {
+    const res = await fetch('/api/v1/users/logout', {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export const logout = async () => {
 
 export const signUp = async (name, email, password, passwordConfirm) => {
   try {
-    const res = await fetch('http://localhost:3000/api/v1/users/signup', {
+    const res = await fetch('/api/v1/users/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
