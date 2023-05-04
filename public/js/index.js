@@ -22,6 +22,9 @@ if (mapBox) {
 if (loginForm) {
   document.querySelector('.form').addEventListener('submit', (e) => {
     e.preventDefault();
+    const loginBtn = document.querySelector('.nav__el--login');
+    loginBtn.textContent = 'Loading...';
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     login(email, password);
@@ -30,6 +33,9 @@ if (loginForm) {
 if (signupForm) {
   document.querySelector('.form').addEventListener('submit', (e) => {
     e.preventDefault();
+    const signupBtn = document.querySelector('.nav__el--signup');
+    signupBtn.textContent = 'Loading...';
+
     const name = document.getElementById('signup-name').value;
     const email = document.getElementById('signup-email').value;
     const password = document.getElementById('signup-password').value;

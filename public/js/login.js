@@ -60,10 +60,10 @@ export const signUp = async (name, email, password, passwordConfirm) => {
     if (data.status === 'success') {
       showAlert(
         'success',
-        'Welcome to Natours! You will be transfer to login page shortly'
+        'Welcome to Natours! You will be transfer to personal page shortly'
       );
       window.setTimeout(() => {
-        location.assign('/login');
+        location.assign('/me');
       }, 1500);
     } else {
       throw new Error(data.message);

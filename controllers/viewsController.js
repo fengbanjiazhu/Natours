@@ -59,11 +59,18 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   // find tours with the id
   const tourIDs = bookings.map((el) => el.tour.id);
   const tours = await Tour.find({ _id: { $in: tourIDs } });
+  console.log('my booking', tours);
 
-  res.status(200).render('overview', {
-    title: `My tours`,
-    tours,
-  });
+  if (tours.length > 0) {
+    res.status(200).render('overview', {
+      title: `My tours`,
+      tours,
+    });
+  } else {
+    res.status(200).render('overview', {
+      title: `My tours`,
+    });
+  }
 });
 
 exports.updateUserData = catchAsync(async (req, res, next) => {
