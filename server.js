@@ -33,7 +33,7 @@ mongoose
   .catch((err) => console.log('Connection ERROR💥:', err));
 
 // Server
-const port = 3000 || process.env.PORT;
+const port = 8000 || process.env.PORT;
 
 const server = app.listen(port, () => {
   console.log(`app running on ${port}...`);
